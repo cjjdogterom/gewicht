@@ -331,14 +331,16 @@ async function loadData() {
 
 function getS() { return cachedSettings || DEFAULTS; }
 
-// Lineaire interpolatie: voorspeld gewicht op een gegeven datum
+// Doellijn: lineaire interpolatie van eerste meting → streefgewicht op einddatum
 function voorspeld(datumStr) {
-  const s = getS();
-  const t0 = new Date(s.beginDatum).getTime();
+  const s  = getS();
+  const d0 = cachedData[0];
+  if (!d0) return null;
+  const t0 = new Date(d0.datum).getTime();
   const t1 = new Date(s.eindDatum).getTime();
   const t  = new Date(datumStr).getTime();
-  const pct = Math.max(0, Math.min(1, (t - t0) / (t1 - t0)));
-  return +(s.beginGewicht + pct * (s.streefGewicht - s.beginGewicht)).toFixed(2);
+  const pct = Math.max(0, (t - t0) / (t1 - t0));
+  return +(d0.gewicht + pct * (s.streefGewicht - d0.gewicht)).toFixed(2);
 }
 
 function getFiltered() {
