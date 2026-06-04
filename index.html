@@ -418,8 +418,7 @@ function renderCharts() {
     type: 'line',
     data: { labels, datasets: [
       { label:'Werkelijk', data: data.map(d => d.gewicht), borderColor:'#2e8b57', backgroundColor:'rgba(46,139,87,.07)', tension:.35, pointRadius:2.5, pointBackgroundColor:'#2e8b57', borderWidth:2, fill:true },
-      { label:'Voorspeld', data: voorspeldLijn, borderColor:'#1a6fa8', backgroundColor:'transparent', tension:.35, pointRadius:0, borderWidth:2, borderDash:[6,4] },
-      { label:'Doel',      data: data.map(() => s.streefGewicht), borderColor:'#c95d00', backgroundColor:'transparent', pointRadius:0, borderWidth:1.5, borderDash:[3,6] },
+      { label:'Doellijn',  data: voorspeldLijn, borderColor:'#c95d00', backgroundColor:'transparent', tension:0, pointRadius:0, borderWidth:2, borderDash:[6,4] },
     ]},
     options: opts
   });
