@@ -3,284 +3,250 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gewicht Tracker</title>
+  <title>Gewicht</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --green: #2e8b57;
-      --green-light: #4caf7d;
-      --green-pale: #e8f5ee;
-      --green-pale2: #d4eddf;
-      --blue: #1a6fa8;
-      --orange: #c95d00;
-      --danger: #c0392b;
-      --text: #1c3a2a;
-      --text2: #4a7060;
-      --muted: #7a9e8a;
-      --border: #c8e3d4;
+      --green: #2f7a4f;
+      --green-soft: #5a9d77;
+      --blue: #4f7a9d;
+      --orange: #b86b2e;
+      --danger: #b04141;
+      --text: #1f2a25;
+      --muted: #758c80;
+      --line: #e3ede7;
+      --bg: #f7faf8;
       --surface: #ffffff;
-      --radius: 16px;
-      --shadow: 0 2px 12px rgba(46,139,87,.08);
-      --shadow-md: 0 4px 24px rgba(46,139,87,.12);
     }
 
+    html, body { background: var(--bg); color: var(--text); }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(160deg, #f0faf4 0%, #e8f5ee 40%, #f5fbf7 100%);
-      background-attachment: fixed;
-      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
       min-height: 100vh;
-      padding: 24px 20px 40px;
+      padding: 32px 24px 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
     /* Header */
     header {
       display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 32px; flex-wrap: wrap; gap: 12px;
+      margin-bottom: 36px; gap: 12px; flex-wrap: wrap;
     }
-    .logo { display: flex; align-items: center; gap: 10px; }
-    .logo-icon {
-      width: 40px; height: 40px; border-radius: 12px;
-      background: linear-gradient(135deg, var(--green), var(--green-light));
-      display: flex; align-items: center; justify-content: center;
-      color: white; font-size: 1.2rem; box-shadow: 0 2px 8px rgba(46,139,87,.3);
-    }
-    header h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text); }
-    header h1 span { color: var(--green); }
-    .header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .title { font-size: 1.25rem; font-weight: 600; color: var(--text); letter-spacing: -0.2px; }
+    .title-accent { color: var(--green); font-weight: 600; }
+    .actions { display: flex; gap: 8px; align-items: center; }
 
-    .btn {
-      padding: 9px 18px; border: none; border-radius: 10px; cursor: pointer;
-      font-size: 0.875rem; font-weight: 600; transition: all .15s; white-space: nowrap;
+    button {
+      font-family: inherit; cursor: pointer; border: none;
+      padding: 8px 16px; border-radius: 8px;
+      font-size: 0.85rem; font-weight: 500;
+      transition: all .12s ease;
     }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--green), var(--green-light));
-      color: #fff; box-shadow: 0 2px 8px rgba(46,139,87,.3);
-    }
-    .btn-primary:hover { box-shadow: 0 4px 16px rgba(46,139,87,.4); transform: translateY(-1px); }
-    .btn-secondary { background: rgba(255,255,255,.8); border: 1px solid var(--border); color: var(--text2); backdrop-filter: blur(4px); }
-    .btn-secondary:hover { background: #fff; border-color: var(--green); color: var(--green); }
-    .btn-danger { background: var(--danger); color: #fff; }
-    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
+    .btn-primary { background: var(--green); color: #fff; }
+    .btn-primary:hover { background: #266641; }
+    .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+    .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+    .btn-danger { background: transparent; color: var(--danger); border: 1px solid #e8c8c8; }
+    .btn-danger:hover { background: #fbf0f0; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
 
-    .db-pill {
-      display: flex; align-items: center; gap: 6px;
-      background: rgba(255,255,255,.7); border: 1px solid var(--border);
-      border-radius: 99px; padding: 4px 10px 4px 6px; font-size: 0.75rem;
-      color: var(--muted); backdrop-filter: blur(4px);
+    .status {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.78rem; color: var(--muted);
     }
-    .db-dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; }
-    .db-dot.ok { background: var(--green); box-shadow: 0 0 0 3px rgba(46,139,87,.2); }
-    .db-dot.err { background: var(--danger); }
+    .status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #c8d4ce; }
+    .status.ok::before { background: var(--green); }
+    .status.err::before { background: var(--danger); }
 
-    /* Stats grid */
-    .stats-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 14px; margin-bottom: 20px;
+    /* Hero stat */
+    .hero {
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: 12px; padding: 28px 32px;
+      margin-bottom: 16px;
+      display: flex; gap: 32px; align-items: center; flex-wrap: wrap;
     }
-    .stat-card {
-      background: var(--surface); border-radius: var(--radius);
-      padding: 18px 20px; box-shadow: var(--shadow);
-      border: 1px solid rgba(200,227,212,.6);
-      position: relative; overflow: hidden;
-    }
-    .stat-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-      border-radius: var(--radius) var(--radius) 0 0;
-    }
-    .stat-card.green::before { background: linear-gradient(90deg, var(--green), var(--green-light)); }
-    .stat-card.blue::before { background: linear-gradient(90deg, var(--blue), #3498db); }
-    .stat-card.orange::before { background: linear-gradient(90deg, var(--orange), #e67e22); }
-    .stat-card .label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 8px; font-weight: 600; }
-    .stat-card .value { font-size: 1.7rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-    .stat-card.green .value { color: var(--green); }
-    .stat-card.blue .value { color: var(--blue); }
-    .stat-card.orange .value { color: var(--orange); }
-    .stat-card .sub { font-size: 0.76rem; color: var(--muted); }
+    .hero-main { flex: 1; min-width: 200px; }
+    .hero-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 8px; font-weight: 500; }
+    .hero-value { font-size: 2.4rem; font-weight: 700; color: var(--text); letter-spacing: -1px; line-height: 1; }
+    .hero-sub { font-size: 0.82rem; color: var(--muted); margin-top: 6px; }
 
-    /* Progress */
-    .section-card {
-      background: var(--surface); border-radius: var(--radius);
-      padding: 22px 24px; box-shadow: var(--shadow);
-      border: 1px solid rgba(200,227,212,.6); margin-bottom: 20px;
+    .hero-meta { display: flex; gap: 28px; flex-wrap: wrap; }
+    .meta-item { }
+    .meta-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 4px; }
+    .meta-value { font-size: 1.05rem; font-weight: 600; }
+
+    /* Compact stats */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px; margin-bottom: 24px;
     }
-    .section-title {
-      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .8px; color: var(--muted); margin-bottom: 16px;
+    .stat {
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: 10px; padding: 14px 16px;
+    }
+    .stat-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 6px; font-weight: 500; }
+    .stat-value { font-size: 1.25rem; font-weight: 600; color: var(--text); }
+    .stat-sub { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+
+    /* Progress card */
+    .progress-card {
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: 12px; padding: 22px 24px; margin-bottom: 24px;
     }
     .progress-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
     .progress-row:last-child { margin-bottom: 0; }
-    .progress-label { font-size: 0.82rem; width: 90px; color: var(--text2); font-weight: 500; }
-    .progress-track { flex: 1; background: var(--green-pale); border-radius: 99px; height: 8px; overflow: hidden; }
-    .progress-fill { height: 100%; border-radius: 99px; transition: width .5s cubic-bezier(.4,0,.2,1); }
-    .progress-pct { font-size: 0.82rem; font-weight: 700; width: 42px; text-align: right; }
+    .progress-name { font-size: 0.82rem; width: 80px; color: var(--muted); }
+    .track { flex: 1; background: #eef3f0; border-radius: 99px; height: 6px; overflow: hidden; }
+    .fill { height: 100%; border-radius: 99px; transition: width .4s ease; }
+    .fill-green { background: var(--green); }
+    .fill-blue  { background: var(--blue); }
+    .fill-orange{ background: var(--orange); }
+    .progress-val { font-size: 0.82rem; font-weight: 600; width: 42px; text-align: right; color: var(--text); }
 
-    /* Charts */
-    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-    @media (max-width: 768px) { .charts-grid { grid-template-columns: 1fr; } }
-
-    .time-filter { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
-    .filter-btn {
-      padding: 5px 14px; background: rgba(255,255,255,.7); border: 1px solid var(--border);
-      border-radius: 99px; color: var(--muted); cursor: pointer; font-size: 0.78rem;
-      font-weight: 500; transition: all .15s; backdrop-filter: blur(4px);
+    /* Chart card */
+    .card {
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: 12px; padding: 22px 24px; margin-bottom: 16px;
     }
-    .filter-btn.active { background: var(--green); border-color: var(--green); color: #fff; box-shadow: 0 2px 8px rgba(46,139,87,.25); }
+    .card-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 18px; flex-wrap: wrap; gap: 10px;
+    }
+    .card-title { font-size: 0.9rem; font-weight: 600; }
+    .card-meta { font-size: 0.78rem; color: var(--muted); }
+
+    .filter { display: flex; gap: 4px; }
+    .filter-btn {
+      padding: 4px 12px; background: transparent; border: 1px solid var(--line);
+      border-radius: 99px; color: var(--muted); cursor: pointer; font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .filter-btn.active { background: var(--text); border-color: var(--text); color: #fff; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 800px) { .grid-2 { grid-template-columns: 1fr; } }
 
     /* Table */
-    .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
-    .table-header h3 { font-size: 0.95rem; font-weight: 700; }
-    .data-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
-    .data-table th { text-align: left; padding: 8px 14px; color: var(--muted); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: .6px; border-bottom: 1px solid var(--border); }
-    .data-table td { padding: 11px 14px; border-bottom: 1px solid rgba(200,227,212,.5); }
-    .data-table tr:last-child td { border-bottom: none; }
-    .data-table tbody tr:hover td { background: var(--green-pale); }
-    .badge { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 99px; font-size: 0.73rem; font-weight: 700; }
-    .badge.pos { background: rgba(46,139,87,.1); color: var(--green); }
-    .badge.neg { background: rgba(201,93,0,.1); color: var(--orange); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { text-align: left; padding: 8px 12px; color: var(--muted); font-weight: 500; font-size: 0.7rem; text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid var(--line); }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--line); }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #f5f9f7; }
+    .num { font-variant-numeric: tabular-nums; }
+    .delta { font-size: 0.78rem; font-weight: 600; }
+    .delta.pos { color: var(--green); }
+    .delta.neg { color: var(--orange); }
 
-    /* Modals */
-    .modal-overlay {
+    /* Modal */
+    .overlay {
       display: none; position: fixed; inset: 0;
-      background: rgba(28,58,42,.4); backdrop-filter: blur(6px);
-      z-index: 100; align-items: center; justify-content: center; padding: 16px;
+      background: rgba(31,42,37,.35); backdrop-filter: blur(3px);
+      z-index: 50; align-items: center; justify-content: center; padding: 16px;
     }
-    .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--surface); border-radius: 20px;
-      padding: 28px 28px 24px; width: 100%; max-width: 420px;
+    .overlay.open { display: flex; }
+    .dialog {
+      background: var(--surface); border-radius: 12px;
+      padding: 28px; width: 100%; max-width: 420px;
       max-height: 90vh; overflow-y: auto;
-      box-shadow: 0 20px 60px rgba(28,58,42,.2);
-      border: 1px solid rgba(200,227,212,.8);
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 40px rgba(31,42,37,.12);
     }
-    .modal.wide { max-width: 560px; }
-    .modal h2 { font-size: 1.15rem; font-weight: 800; margin-bottom: 22px; color: var(--text); }
-    .form-group { margin-bottom: 14px; }
-    .form-group label { display: block; font-size: 0.76rem; color: var(--muted); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
-    .form-group input {
-      width: 100%; background: var(--green-pale);
-      border: 1.5px solid var(--border); border-radius: 10px;
-      padding: 10px 13px; color: var(--text); font-size: 0.92rem;
-      transition: border-color .15s;
+    .dialog.wide { max-width: 560px; }
+    .dialog h2 { font-size: 1.05rem; font-weight: 600; margin-bottom: 20px; }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 0.75rem; color: var(--muted); margin-bottom: 5px; font-weight: 500; }
+    .field input {
+      width: 100%; font-family: inherit;
+      background: var(--bg); border: 1px solid var(--line);
+      border-radius: 8px; padding: 9px 12px; color: var(--text);
+      font-size: 0.9rem; transition: border-color .12s;
     }
-    .form-group input:focus { outline: none; border-color: var(--green); background: #fff; }
-    .form-section {
+    .field input:focus { outline: none; border-color: var(--green); background: #fff; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .section-label {
       font-size: 0.7rem; color: var(--muted); text-transform: uppercase;
-      letter-spacing: .7px; font-weight: 700; margin: 20px 0 10px;
-      padding-bottom: 7px; border-bottom: 1px solid var(--border);
+      letter-spacing: .6px; font-weight: 600;
+      margin: 22px 0 10px; padding-bottom: 8px; border-bottom: 1px solid var(--line);
     }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 22px; }
-    .modal-actions-split { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; flex-wrap: wrap; gap: 10px; }
+    .dialog-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 22px; }
+    .dialog-split { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
 
-    .tdee-box {
-      background: linear-gradient(135deg, var(--green-pale), #f0faf4);
-      border: 1px solid var(--green-pale2); border-radius: 12px;
-      padding: 14px 16px; margin-top: 8px;
+    .tdee-summary {
+      background: var(--bg); border: 1px solid var(--line);
+      border-radius: 8px; padding: 12px 14px; margin-top: 6px; font-size: 0.82rem;
     }
-    .tdee-row { display: flex; justify-content: space-between; font-size: 0.84rem; padding: 3px 0; color: var(--text2); }
-    .tdee-row.total { font-weight: 800; border-top: 1px solid var(--border); margin-top: 8px; padding-top: 10px; color: var(--green); font-size: 0.92rem; }
+    .tdee-line { display: flex; justify-content: space-between; padding: 2px 0; color: var(--muted); }
+    .tdee-line.total { font-weight: 600; color: var(--text); border-top: 1px solid var(--line); margin-top: 6px; padding-top: 8px; }
 
-    .skeleton { background: linear-gradient(90deg, var(--green-pale) 25%, #f0faf4 50%, var(--green-pale) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; height: 80px; }
-    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    .empty {
+      text-align: center; padding: 60px 20px; color: var(--muted); font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">
-    <div class="logo-icon">⚖</div>
-    <h1>Gewicht <span>Tracker</span></h1>
-  </div>
-  <div class="header-actions">
-    <div class="db-pill"><div class="db-dot" id="dbDot"></div><span id="dbLabel">verbinden…</span></div>
-    <button class="btn btn-secondary" onclick="openInstellingen()">⚙ Instellingen</button>
-    <button class="btn btn-primary" onclick="openMeting()">+ Meting</button>
+  <div class="title">Gewicht<span class="title-accent">.</span></div>
+  <div class="actions">
+    <span class="status" id="dbStatus">verbinden…</span>
+    <button class="btn-ghost" onclick="openInstellingen()">Instellingen</button>
+    <button class="btn-primary" onclick="openMeting()">+ Meting</button>
   </div>
 </header>
 
-<div class="stats-grid" id="statsGrid">
-  <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
-  <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
-</div>
-
-<div class="section-card">
-  <div class="section-title">Voortgang naar doel</div>
-  <div id="progressBars"></div>
-</div>
-
-<div class="time-filter">
-  <button class="filter-btn" data-days="30" onclick="setFilter(30)">30 dagen</button>
-  <button class="filter-btn" data-days="60" onclick="setFilter(60)">60 dagen</button>
-  <button class="filter-btn active" data-days="0" onclick="setFilter(0)">Alles</button>
-</div>
-
-<div class="charts-grid">
-  <div class="section-card" style="margin-bottom:0"><h3 style="font-size:.9rem;font-weight:700;margin-bottom:16px">Gewicht (kg)</h3><canvas id="weightChart"></canvas></div>
-  <div class="section-card" style="margin-bottom:0"><h3 style="font-size:.9rem;font-weight:700;margin-bottom:16px">Vet % over tijd</h3><canvas id="fatChart"></canvas></div>
-</div>
-
-<div class="section-card" style="margin-top:16px">
-  <div class="table-header">
-    <h3>Metingen</h3>
-    <span id="entryCount" style="color:var(--muted);font-size:.82rem;"></span>
-  </div>
-  <div style="overflow-x:auto">
-    <table class="data-table">
-      <thead><tr><th>Datum</th><th>Gewicht</th><th>Voorspeld</th><th>Verschil</th><th>Vet %</th></tr></thead>
-      <tbody id="tableBody"></tbody>
-    </table>
-  </div>
-</div>
+<div id="content"></div>
 
 <!-- Meting modal -->
-<div class="modal-overlay" id="metingOverlay" onclick="closeOnOutside(event,'metingOverlay')">
-  <div class="modal">
+<div class="overlay" id="metingOverlay" onclick="closeOnOutside(event,'metingOverlay')">
+  <div class="dialog">
     <h2>Nieuwe meting</h2>
-    <div class="form-group"><label>Datum</label><input type="date" id="inputDatum" /></div>
-    <div class="form-group"><label>Gewicht (kg)</label><input type="number" id="inputGewicht" step="0.1" placeholder="bv. 83.5" /></div>
-    <div class="form-group"><label>Vet % <span style="font-weight:400;text-transform:none">(optioneel)</span></label><input type="number" id="inputVet" step="0.1" placeholder="bv. 21.5" /></div>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeModal('metingOverlay')">Annuleren</button>
-      <button class="btn btn-primary" id="btnSaveMeting" onclick="saveMeting()">Opslaan</button>
+    <div class="field"><label>Datum</label><input type="date" id="inputDatum" /></div>
+    <div class="field"><label>Gewicht (kg)</label><input type="number" id="inputGewicht" step="0.1" placeholder="bv. 83.5" /></div>
+    <div class="field"><label>Vet % (optioneel)</label><input type="number" id="inputVet" step="0.1" placeholder="bv. 21.5" /></div>
+    <div class="dialog-actions">
+      <button class="btn-ghost" onclick="closeModal('metingOverlay')">Annuleren</button>
+      <button class="btn-primary" id="btnSaveMeting" onclick="saveMeting()">Opslaan</button>
     </div>
   </div>
 </div>
 
 <!-- Instellingen modal -->
-<div class="modal-overlay" id="instellingenOverlay" onclick="closeOnOutside(event,'instellingenOverlay')">
-  <div class="modal wide">
+<div class="overlay" id="instellingenOverlay" onclick="closeOnOutside(event,'instellingenOverlay')">
+  <div class="dialog wide">
     <h2>Instellingen</h2>
-    <div class="form-section">Gewicht &amp; doelen</div>
-    <div class="form-row">
-      <div class="form-group"><label>Begingewicht (kg)</label><input type="number" id="sBeginGewicht" step="0.1" /></div>
-      <div class="form-group"><label>Streefgewicht (kg)</label><input type="number" id="sStreefGewicht" step="0.1" /></div>
+    <div class="section-label">Gewicht &amp; doelen</div>
+    <div class="field-row">
+      <div class="field"><label>Begingewicht (kg)</label><input type="number" id="sBeginGewicht" step="0.1" /></div>
+      <div class="field"><label>Streefgewicht (kg)</label><input type="number" id="sStreefGewicht" step="0.1" /></div>
     </div>
-    <div class="form-row">
-      <div class="form-group"><label>Begin vet %</label><input type="number" id="sBeginVet" step="0.1" /></div>
-      <div class="form-group"><label>Doel vet %</label><input type="number" id="sDoelVet" step="0.1" /></div>
+    <div class="field-row">
+      <div class="field"><label>Begin vet %</label><input type="number" id="sBeginVet" step="0.1" /></div>
+      <div class="field"><label>Doel vet %</label><input type="number" id="sDoelVet" step="0.1" /></div>
     </div>
-    <div class="form-row">
-      <div class="form-group"><label>Begindatum</label><input type="date" id="sBeginDatum" /></div>
-      <div class="form-group"><label>Einddatum (deadline)</label><input type="date" id="sEindDatum" /></div>
+    <div class="field-row">
+      <div class="field"><label>Begindatum</label><input type="date" id="sBeginDatum" /></div>
+      <div class="field"><label>Einddatum</label><input type="date" id="sEindDatum" /></div>
     </div>
-    <div class="form-section">Energieverbruik (TDEE)</div>
-    <div class="form-row">
-      <div class="form-group"><label>BMR – rustverbranding (kcal)</label><input type="number" id="sBmr" step="1" /></div>
-      <div class="form-group"><label>EAT – sport (kcal)</label><input type="number" id="sEat" step="1" /></div>
+    <div class="section-label">Energieverbruik (TDEE)</div>
+    <div class="field-row">
+      <div class="field"><label>BMR (kcal)</label><input type="number" id="sBmr" /></div>
+      <div class="field"><label>EAT — sport (kcal)</label><input type="number" id="sEat" /></div>
     </div>
-    <div class="form-row">
-      <div class="form-group"><label>NEAT – dagelijkse beweging</label><input type="number" id="sNeat" step="1" /></div>
-      <div class="form-group"><label>TEF – spijsvertering (kcal)</label><input type="number" id="sTef" step="1" /></div>
+    <div class="field-row">
+      <div class="field"><label>NEAT — beweging</label><input type="number" id="sNeat" /></div>
+      <div class="field"><label>TEF — spijsvertering</label><input type="number" id="sTef" /></div>
     </div>
-    <div class="tdee-box" id="tdeeDisplay"></div>
-    <div class="modal-actions-split">
-      <button class="btn btn-danger" onclick="verwijderAlleData()">🗑 Verwijder alle data</button>
+    <div class="tdee-summary" id="tdeeDisplay"></div>
+    <div class="dialog-split">
+      <button class="btn-danger" onclick="verwijderAlleData()">Verwijder alle metingen</button>
       <div style="display:flex;gap:8px">
-        <button class="btn btn-secondary" onclick="closeModal('instellingenOverlay')">Annuleren</button>
-        <button class="btn btn-primary" id="btnSaveSettings" onclick="saveInstellingen()">Opslaan</button>
+        <button class="btn-ghost" onclick="closeModal('instellingenOverlay')">Annuleren</button>
+        <button class="btn-primary" id="btnSaveSettings" onclick="saveInstellingen()">Opslaan</button>
       </div>
     </div>
   </div>
@@ -325,14 +291,14 @@ async function loadData() {
   }));
   const saved = Object.fromEntries(rowsToObjs(sRes).map(r => [r.sleutel, isNaN(r.waarde) ? r.waarde : parseFloat(r.waarde)]));
   cachedSettings = { ...DEFAULTS, ...saved };
-  document.getElementById('dbDot').className = 'db-dot ok';
-  document.getElementById('dbLabel').textContent = 'Verbonden';
+  document.getElementById('dbStatus').className = 'status ok';
+  document.getElementById('dbStatus').textContent = 'verbonden';
 }
 
 function getS() { return cachedSettings || DEFAULTS; }
 
 // Doellijn: lineair van beginGewicht (op beginDatum) naar streefGewicht (op eindDatum)
-function voorspeld(datumStr) {
+function doelGewicht(datumStr) {
   const s  = getS();
   const t0 = new Date(s.beginDatum).getTime();
   const t1 = new Date(s.eindDatum).getTime();
@@ -352,64 +318,130 @@ function fmt(d) { const [y,m,day] = d.split('-'); return `${day}-${m}-${y}`; }
 function setFilter(days) {
   filterDays = days;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.days) === days));
-  renderCharts(); renderTable();
+  renderCharts();
+  renderTable();
 }
 
-function renderStats() {
-  const s = getS(), last = cachedData[cachedData.length - 1];
-  if (!last) return;
-  const verloren  = +(s.beginGewicht - last.gewicht).toFixed(1);
-  const nodig     = +(last.gewicht - s.streefGewicht).toFixed(1);
+function render() {
+  if (!cachedData.length) {
+    document.getElementById('content').innerHTML = `<div class="card"><div class="empty">Nog geen metingen. Klik op <strong>+ Meting</strong> om te beginnen.</div></div>`;
+    return;
+  }
+  const s = getS();
+  const last = cachedData[cachedData.length - 1];
+  const eerste = cachedData[0];
+  const verloren = +(eerste.gewicht - last.gewicht).toFixed(1);
+  const nodig = +(last.gewicht - s.streefGewicht).toFixed(1);
   const dagenOver = Math.max(0, Math.ceil((new Date(s.eindDatum) - new Date()) / 86400000));
-  const tdee      = s.bmr + s.eat + s.neat + s.tef;
-  const gems      = cachedData.slice(-7).reduce((a,d) => a + d.gewicht, 0) / Math.min(7, cachedData.length);
+  const tdee = s.bmr + s.eat + s.neat + s.tef;
+  const gems = cachedData.slice(-7).reduce((a, d) => a + d.gewicht, 0) / Math.min(7, cachedData.length);
+  const doelVandaag = doelGewicht(new Date().toISOString().slice(0,10));
+  const opSchema = last.gewicht - doelVandaag;
 
-  document.getElementById('statsGrid').innerHTML = [
-    { label: 'Huidig gewicht', value: `${last.gewicht} kg`, sub: fmt(last.datum), cls: 'green' },
-    { label: 'Verloren',       value: `${verloren} kg`,     sub: `van ${s.beginGewicht} kg`, cls: 'green' },
-    { label: 'Nog te gaan',    value: `${nodig} kg`,        sub: `doel: ${s.streefGewicht} kg`, cls: nodig < 5 ? 'green' : 'orange' },
-    { label: 'Vet %',          value: last.vet_perc ? `${last.vet_perc}%` : '–', sub: `doel: ${s.doelVet}%`, cls: 'blue' },
-    { label: 'Dagen resterend',value: dagenOver,             sub: fmt(s.eindDatum), cls: 'orange' },
-    { label: 'TDEE',           value: tdee,                  sub: 'kcal/dag', cls: 'blue' },
-    { label: '7-daags gem.',   value: `${gems.toFixed(1)} kg`, sub: 'laatste week', cls: '' },
-  ].map(c => `
-    <div class="stat-card ${c.cls}">
-      <div class="label">${c.label}</div>
-      <div class="value">${c.value}</div>
-      <div class="sub">${c.sub}</div>
-    </div>`).join('');
-}
+  const gwPct  = Math.max(0, Math.min(100, ((s.beginGewicht - last.gewicht) / (s.beginGewicht - s.streefGewicht)) * 100));
+  const vetPct = last.vet_perc ? Math.max(0, Math.min(100, ((s.beginVet - last.vet_perc) / (s.beginVet - s.doelVet)) * 100)) : 0;
+  const tijdPct = Math.max(0, Math.min(100, ((new Date() - new Date(s.beginDatum)) / (new Date(s.eindDatum) - new Date(s.beginDatum))) * 100));
 
-function renderProgress() {
-  const s = getS(), last = cachedData[cachedData.length - 1];
-  if (!last) return;
-  const gwPct  = Math.min(100, ((s.beginGewicht - last.gewicht) / (s.beginGewicht - s.streefGewicht)) * 100);
-  const vetPct = last.vet_perc ? Math.min(100, ((s.beginVet - last.vet_perc) / (s.beginVet - s.doelVet)) * 100) : 0;
-  const tijdPct = Math.min(100, ((new Date() - new Date(s.beginDatum)) / (new Date(s.eindDatum) - new Date(s.beginDatum))) * 100);
-  document.getElementById('progressBars').innerHTML = [
-    { label:'Gewicht', pct:gwPct,   color:'var(--green)', grad:'linear-gradient(90deg,#2e8b57,#4caf7d)' },
-    { label:'Vet %',   pct:vetPct,  color:'var(--blue)',  grad:'linear-gradient(90deg,#1a6fa8,#3498db)' },
-    { label:'Tijd',    pct:tijdPct, color:'var(--orange)',grad:'linear-gradient(90deg,#c95d00,#e67e22)' },
-  ].map(b => `
-    <div class="progress-row">
-      <div class="progress-label">${b.label}</div>
-      <div class="progress-track"><div class="progress-fill" style="width:${b.pct.toFixed(1)}%;background:${b.grad}"></div></div>
-      <div class="progress-pct" style="color:${b.color}">${b.pct.toFixed(0)}%</div>
-    </div>`).join('');
+  document.getElementById('content').innerHTML = `
+    <div class="hero">
+      <div class="hero-main">
+        <div class="hero-label">Huidig gewicht</div>
+        <div class="hero-value num">${last.gewicht.toFixed(1)} <span style="font-size:1.2rem;color:var(--muted);font-weight:500">kg</span></div>
+        <div class="hero-sub">${fmt(last.datum)} · ${opSchema <= 0 ? `<span style="color:var(--green)">${Math.abs(opSchema).toFixed(1)} kg vóór op schema</span>` : `<span style="color:var(--orange)">${opSchema.toFixed(1)} kg achter op schema</span>`}</div>
+      </div>
+      <div class="hero-meta">
+        <div class="meta-item">
+          <div class="meta-label">Verloren</div>
+          <div class="meta-value" style="color:var(--green)" class="num">−${verloren} kg</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Nog te gaan</div>
+          <div class="meta-value num">${nodig.toFixed(1)} kg</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Doel</div>
+          <div class="meta-value num">${s.streefGewicht} kg</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat"><div class="stat-label">Vet %</div><div class="stat-value num">${last.vet_perc ? last.vet_perc + '%' : '—'}</div><div class="stat-sub">doel: ${s.doelVet}%</div></div>
+      <div class="stat"><div class="stat-label">Dagen resterend</div><div class="stat-value num">${dagenOver}</div><div class="stat-sub">tot ${fmt(s.eindDatum)}</div></div>
+      <div class="stat"><div class="stat-label">TDEE</div><div class="stat-value num">${tdee}</div><div class="stat-sub">kcal/dag</div></div>
+      <div class="stat"><div class="stat-label">7-daags gem.</div><div class="stat-value num">${gems.toFixed(1)} kg</div><div class="stat-sub">laatste week</div></div>
+      <div class="stat"><div class="stat-label">Doel vandaag</div><div class="stat-value num">${doelVandaag.toFixed(1)} kg</div><div class="stat-sub">volgens doellijn</div></div>
+    </div>
+
+    <div class="progress-card">
+      <div class="progress-row">
+        <div class="progress-name">Gewicht</div>
+        <div class="track"><div class="fill fill-green" style="width:${gwPct.toFixed(1)}%"></div></div>
+        <div class="progress-val">${gwPct.toFixed(0)}%</div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-name">Vet %</div>
+        <div class="track"><div class="fill fill-blue" style="width:${vetPct.toFixed(1)}%"></div></div>
+        <div class="progress-val">${vetPct.toFixed(0)}%</div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-name">Tijd</div>
+        <div class="track"><div class="fill fill-orange" style="width:${tijdPct.toFixed(1)}%"></div></div>
+        <div class="progress-val">${tijdPct.toFixed(0)}%</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Gewicht</div>
+          <div class="filter">
+            <button class="filter-btn" data-days="30" onclick="setFilter(30)">30d</button>
+            <button class="filter-btn" data-days="60" onclick="setFilter(60)">60d</button>
+            <button class="filter-btn active" data-days="0" onclick="setFilter(0)">Alles</button>
+          </div>
+        </div>
+        <canvas id="weightChart"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Vet %</div></div>
+        <canvas id="fatChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Recente metingen</div>
+        <div class="card-meta">${cachedData.length} totaal</div>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Datum</th><th>Gewicht</th><th>Doel</th><th>Verschil</th><th>Vet %</th></tr></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  renderCharts();
+  renderTable();
 }
 
 function renderCharts() {
   const s    = getS();
   const data = getFiltered();
   const labels = data.map(d => fmt(d.datum));
-  const voorspeldLijn = data.map(d => voorspeld(d.datum));
+  const doelLijn = data.map(d => doelGewicht(d.datum));
 
   const opts = {
-    responsive: true, maintainAspectRatio: true,
-    plugins: { legend: { labels: { color: '#7a9e8a', font: { size: 11 }, boxWidth: 12, padding: 16 } } },
+    responsive: true, maintainAspectRatio: true, aspectRatio: 1.5,
+    plugins: {
+      legend: { labels: { color: '#758c80', font: { size: 11 }, boxWidth: 10, padding: 14, usePointStyle: true, pointStyle: 'line' } },
+      tooltip: { backgroundColor: '#1f2a25', titleFont: { size: 11 }, bodyFont: { size: 11 }, padding: 8, displayColors: false }
+    },
     scales: {
-      x: { ticks: { color: '#7a9e8a', maxRotation: 40, font: { size: 10 }, maxTicksLimit: 10 }, grid: { color: 'rgba(200,227,212,.4)' }, border: { color: 'rgba(200,227,212,.4)' } },
-      y: { ticks: { color: '#7a9e8a', font: { size: 11 } }, grid: { color: 'rgba(200,227,212,.4)' }, border: { color: 'rgba(200,227,212,.4)' } }
+      x: { ticks: { color: '#758c80', maxRotation: 0, font: { size: 10 }, maxTicksLimit: 6 }, grid: { color: 'rgba(227,237,231,.6)' }, border: { display: false } },
+      y: { ticks: { color: '#758c80', font: { size: 10 } }, grid: { color: 'rgba(227,237,231,.6)' }, border: { display: false } }
     }
   };
 
@@ -417,8 +449,8 @@ function renderCharts() {
   weightChart = new Chart(document.getElementById('weightChart'), {
     type: 'line',
     data: { labels, datasets: [
-      { label:'Werkelijk', data: data.map(d => d.gewicht), borderColor:'#2e8b57', backgroundColor:'rgba(46,139,87,.07)', tension:.35, pointRadius:2.5, pointBackgroundColor:'#2e8b57', borderWidth:2, fill:true },
-      { label:'Doellijn',  data: voorspeldLijn, borderColor:'#c95d00', backgroundColor:'transparent', tension:0, pointRadius:0, borderWidth:2, borderDash:[6,4] },
+      { label:'Werkelijk', data: data.map(d => d.gewicht), borderColor:'#2f7a4f', backgroundColor:'rgba(47,122,79,.06)', tension:.3, pointRadius:0, pointHoverRadius:4, borderWidth:2, fill:true },
+      { label:'Doellijn', data: doelLijn, borderColor:'#b86b2e', backgroundColor:'transparent', tension:0, pointRadius:0, borderWidth:1.5, borderDash:[5,4] },
     ]},
     options: opts
   });
@@ -427,24 +459,24 @@ function renderCharts() {
   fatChart = new Chart(document.getElementById('fatChart'), {
     type: 'line',
     data: { labels, datasets: [
-      { label:'Vet %', data: data.map(d => d.vet_perc), borderColor:'#1a6fa8', backgroundColor:'rgba(26,111,168,.07)', tension:.35, pointRadius:2.5, pointBackgroundColor:'#1a6fa8', borderWidth:2, fill:true, spanGaps:true },
-      { label:'Doel',  data: data.map(() => s.doelVet), borderColor:'#c95d00', backgroundColor:'transparent', pointRadius:0, borderWidth:1.5, borderDash:[3,6] },
+      { label:'Vet %', data: data.map(d => d.vet_perc), borderColor:'#4f7a9d', backgroundColor:'rgba(79,122,157,.06)', tension:.3, pointRadius:0, pointHoverRadius:4, borderWidth:2, fill:true, spanGaps:true },
+      { label:'Doel', data: data.map(() => s.doelVet), borderColor:'#b86b2e', backgroundColor:'transparent', pointRadius:0, borderWidth:1.5, borderDash:[5,4] },
     ]},
     options: opts
   });
 }
 
 function renderTable() {
-  document.getElementById('entryCount').textContent = `${cachedData.length} metingen`;
-  document.getElementById('tableBody').innerHTML = [...cachedData].reverse().slice(0,30).map(d => {
-    const vw   = voorspeld(d.datum);
-    const diff = (d.gewicht - vw).toFixed(2);
-    const badge = `<span class="badge ${parseFloat(diff) <= 0 ? 'pos' : 'neg'}">${parseFloat(diff) > 0 ? '+' : ''}${diff}</span>`;
-    return `<tr><td>${fmt(d.datum)}</td><td><strong>${d.gewicht}</strong></td><td>${vw}</td><td>${badge}</td><td>${d.vet_perc != null ? d.vet_perc + '%' : '–'}</td></tr>`;
+  const tbody = document.getElementById('tableBody');
+  if (!tbody) return;
+  tbody.innerHTML = [...cachedData].reverse().slice(0,15).map(d => {
+    const doel = doelGewicht(d.datum);
+    const diff = (d.gewicht - doel).toFixed(2);
+    const cls = parseFloat(diff) <= 0 ? 'pos' : 'neg';
+    const sign = parseFloat(diff) > 0 ? '+' : '';
+    return `<tr><td>${fmt(d.datum)}</td><td class="num"><strong>${d.gewicht}</strong></td><td class="num">${doel.toFixed(1)}</td><td><span class="delta ${cls}">${sign}${diff}</span></td><td class="num">${d.vet_perc != null ? d.vet_perc + '%' : '—'}</td></tr>`;
   }).join('');
 }
-
-function render() { renderStats(); renderProgress(); renderCharts(); renderTable(); }
 
 /* Meting */
 function openMeting() {
@@ -474,11 +506,11 @@ async function saveMeting() {
 function updateTdee() {
   const [bmr,eat,neat,tef] = ['sBmr','sEat','sNeat','sTef'].map(id => parseFloat(document.getElementById(id).value)||0);
   document.getElementById('tdeeDisplay').innerHTML = `
-    <div class="tdee-row"><span>BMR</span><span>${bmr} kcal</span></div>
-    <div class="tdee-row"><span>EAT (sport)</span><span>${eat} kcal</span></div>
-    <div class="tdee-row"><span>NEAT (beweging)</span><span>${neat} kcal</span></div>
-    <div class="tdee-row"><span>TEF (spijsvertering)</span><span>${tef} kcal</span></div>
-    <div class="tdee-row total"><span>TDEE totaal</span><span>${bmr+eat+neat+tef} kcal/dag</span></div>`;
+    <div class="tdee-line"><span>BMR</span><span>${bmr} kcal</span></div>
+    <div class="tdee-line"><span>EAT (sport)</span><span>${eat} kcal</span></div>
+    <div class="tdee-line"><span>NEAT (beweging)</span><span>${neat} kcal</span></div>
+    <div class="tdee-line"><span>TEF (spijsvertering)</span><span>${tef} kcal</span></div>
+    <div class="tdee-line total"><span>TDEE totaal</span><span>${bmr+eat+neat+tef} kcal/dag</span></div>`;
 }
 
 function openInstellingen() {
@@ -518,9 +550,9 @@ function closeOnOutside(e, id) { if (e.target === document.getElementById(id)) c
 loadData()
   .then(() => render())
   .catch(e => {
-    document.getElementById('dbDot').className = 'db-dot err';
-    document.getElementById('dbLabel').textContent = 'Offline';
-    document.getElementById('statsGrid').innerHTML = `<div style="grid-column:1/-1;padding:20px;color:var(--danger);font-size:.9rem">Database niet bereikbaar: ${e.message}</div>`;
+    document.getElementById('dbStatus').className = 'status err';
+    document.getElementById('dbStatus').textContent = 'offline';
+    document.getElementById('content').innerHTML = `<div class="card"><div class="empty" style="color:var(--danger)">Database niet bereikbaar: ${e.message}</div></div>`;
   });
 </script>
 </body>
