@@ -9,189 +9,101 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0f1117;
-      --surface: #1a1d27;
-      --surface2: #22263a;
-      --border: #2d3148;
-      --accent: #6c63ff;
-      --accent2: #ff6b6b;
-      --green: #43e97b;
-      --yellow: #f7b731;
-      --text: #e8eaf6;
-      --muted: #8890b0;
+      --bg: #f5f7f5;
+      --surface: #ffffff;
+      --surface2: #eef4ee;
+      --border: #d0e4d0;
+      --accent: #2e8b57;
+      --blue: #1a6fa8;
+      --orange: #c95d00;
+      --danger: #c0392b;
+      --text: #1a2e1a;
+      --muted: #6b8a6b;
       --radius: 14px;
     }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 20px;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 20px; }
 
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
+    header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 10px; }
     header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; }
     header h1 span { color: var(--accent); }
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
-    .btn {
-      padding: 10px 20px;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 600;
-      transition: opacity .15s;
-    }
+    .btn { padding: 9px 18px; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 0.875rem; font-weight: 600; transition: opacity .15s; white-space: nowrap; }
     .btn:hover { opacity: .85; }
-    .btn.secondary { background: var(--surface2); border: 1px solid var(--border); }
+    .btn.secondary { background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+    .btn.blue { background: var(--blue); }
+    .btn.danger { background: var(--danger); }
 
-    /* Stats row */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 14px;
-      margin-bottom: 24px;
-    }
-
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px 20px;
-    }
-
-    .stat-card .label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 6px; }
-    .stat-card .value { font-size: 1.8rem; font-weight: 700; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+    .stat-card .label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 6px; }
+    .stat-card .value { font-size: 1.75rem; font-weight: 700; }
     .stat-card .sub { font-size: 0.78rem; color: var(--muted); margin-top: 3px; }
-    .stat-card.accent .value { color: var(--accent); }
-    .stat-card.green .value { color: var(--green); }
-    .stat-card.yellow .value { color: var(--yellow); }
-    .stat-card.red .value { color: var(--accent2); }
+    .stat-card.green .value { color: var(--accent); }
+    .stat-card.blue .value { color: var(--blue); }
+    .stat-card.orange .value { color: var(--orange); }
 
-    /* Progress bar */
-    .progress-section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      margin-bottom: 24px;
-    }
-    .progress-section h3 { font-size: 0.85rem; color: var(--muted); margin-bottom: 14px; text-transform: uppercase; letter-spacing: .6px; }
+    .progress-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 24px; }
+    .progress-section h3 { font-size: 0.8rem; color: var(--muted); margin-bottom: 14px; text-transform: uppercase; letter-spacing: .6px; }
     .progress-row { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
     .progress-label { font-size: 0.85rem; width: 100px; color: var(--muted); }
     .progress-bar-wrap { flex: 1; background: var(--surface2); border-radius: 99px; height: 10px; overflow: hidden; }
     .progress-bar-fill { height: 100%; border-radius: 99px; transition: width .4s; }
     .progress-pct { font-size: 0.85rem; font-weight: 700; width: 48px; text-align: right; }
 
-    /* Charts */
-    .charts-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-bottom: 24px;
-    }
-
-    @media (max-width: 768px) {
-      .charts-grid { grid-template-columns: 1fr; }
-    }
-
-    .chart-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-    }
-
+    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+    @media (max-width: 768px) { .charts-grid { grid-template-columns: 1fr; } }
+    .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
     .chart-card h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; }
 
-    /* Time filter */
     .time-filter { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
-    .filter-btn {
-      padding: 5px 12px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 0.8rem;
-      transition: all .15s;
-    }
+    .filter-btn { padding: 5px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--muted); cursor: pointer; font-size: 0.8rem; transition: all .15s; }
     .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-    /* Table */
-    .table-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      margin-bottom: 24px;
-    }
-
-    .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 24px; }
+    .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
     .table-header h3 { font-size: 0.9rem; font-weight: 600; }
-
     .data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    .data-table th { text-align: left; padding: 8px 12px; color: var(--muted); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid var(--border); }
-    .data-table td { padding: 10px 12px; border-bottom: 1px solid rgba(45,49,72,.5); }
+    .data-table th { text-align: left; padding: 8px 12px; color: var(--muted); font-weight: 500; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid var(--border); }
+    .data-table td { padding: 10px 12px; border-bottom: 1px solid rgba(208,228,208,.8); }
     .data-table tr:last-child td { border-bottom: none; }
     .data-table tr:hover td { background: var(--surface2); }
-
     .badge { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 0.75rem; font-weight: 600; }
-    .badge.pos { background: rgba(67,233,123,.15); color: var(--green); }
-    .badge.neg { background: rgba(255,107,107,.15); color: var(--accent2); }
+    .badge.pos { background: rgba(46,139,87,.12); color: var(--accent); }
+    .badge.neg { background: rgba(201,93,0,.12); color: var(--orange); }
 
-    /* Modal */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.6);
-      backdrop-filter: blur(4px);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-    }
+    /* Modals */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; padding: 16px; }
     .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px;
-      width: 360px;
-      max-width: 95vw;
-    }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; }
+    .modal.wide { max-width: 560px; }
     .modal h2 { font-size: 1.1rem; margin-bottom: 20px; }
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
-    .form-group input {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 14px;
-      color: var(--text);
-      font-size: 0.95rem;
-    }
+
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 5px; font-weight: 500; }
+    .form-group input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 9px 13px; color: var(--text); font-size: 0.92rem; }
     .form-group input:focus { outline: none; border-color: var(--accent); }
-    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+    .form-section { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; margin: 18px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; flex-wrap: wrap; }
+    .modal-actions-split { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; flex-wrap: wrap; gap: 10px; }
+
+    .tdee-display { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-top: 6px; }
+    .tdee-display .tdee-row { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 3px 0; }
+    .tdee-display .tdee-row.total { font-weight: 700; border-top: 1px solid var(--border); margin-top: 6px; padding-top: 8px; color: var(--accent); }
   </style>
 </head>
 <body>
 
 <header>
   <h1>Gewicht <span>Tracker</span></h1>
-  <button class="btn" onclick="openModal()">+ Meting toevoegen</button>
+  <div class="header-actions">
+    <button class="btn secondary" onclick="openInstellingen()">⚙ Instellingen</button>
+    <button class="btn" onclick="openMeting()">+ Meting toevoegen</button>
+  </div>
 </header>
 
 <div class="stats-grid" id="statsGrid"></div>
@@ -201,21 +113,15 @@
   <div id="progressBars"></div>
 </div>
 
-<div class="time-filter" id="timeFilter">
+<div class="time-filter">
   <button class="filter-btn" data-days="30" onclick="setFilter(30)">30 dagen</button>
   <button class="filter-btn" data-days="60" onclick="setFilter(60)">60 dagen</button>
   <button class="filter-btn active" data-days="0" onclick="setFilter(0)">Alles</button>
 </div>
 
 <div class="charts-grid">
-  <div class="chart-card">
-    <h3>Gewicht (kg)</h3>
-    <canvas id="weightChart"></canvas>
-  </div>
-  <div class="chart-card">
-    <h3>Vet % over tijd</h3>
-    <canvas id="fatChart"></canvas>
-  </div>
+  <div class="chart-card"><h3>Gewicht (kg)</h3><canvas id="weightChart"></canvas></div>
+  <div class="chart-card"><h3>Vet % over tijd</h3><canvas id="fatChart"></canvas></div>
 </div>
 
 <div class="table-card">
@@ -224,40 +130,63 @@
     <span id="entryCount" style="color:var(--muted);font-size:.85rem;"></span>
   </div>
   <div style="overflow-x:auto">
-    <table class="data-table" id="dataTable">
-      <thead>
-        <tr>
-          <th>Datum</th>
-          <th>Gewicht (kg)</th>
-          <th>Voorspeld (kg)</th>
-          <th>Verschil</th>
-          <th>Vet %</th>
-        </tr>
-      </thead>
+    <table class="data-table">
+      <thead><tr><th>Datum</th><th>Gewicht (kg)</th><th>Voorspeld (kg)</th><th>Verschil</th><th>Vet %</th></tr></thead>
       <tbody id="tableBody"></tbody>
     </table>
   </div>
 </div>
 
-<!-- Modal -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+<!-- Meting modal -->
+<div class="modal-overlay" id="metingOverlay" onclick="closeOnOutside(event,'metingOverlay')">
   <div class="modal">
     <h2>Nieuwe meting</h2>
-    <div class="form-group">
-      <label>Datum</label>
-      <input type="date" id="inputDatum" />
-    </div>
-    <div class="form-group">
-      <label>Gewicht (kg)</label>
-      <input type="number" id="inputGewicht" step="0.1" placeholder="bv. 83.5" />
-    </div>
-    <div class="form-group">
-      <label>Vet % (optioneel)</label>
-      <input type="number" id="inputVet" step="0.1" placeholder="bv. 21.5" />
-    </div>
+    <div class="form-group"><label>Datum</label><input type="date" id="inputDatum" /></div>
+    <div class="form-group"><label>Gewicht (kg)</label><input type="number" id="inputGewicht" step="0.1" placeholder="bv. 83.5" /></div>
+    <div class="form-group"><label>Vet % (optioneel)</label><input type="number" id="inputVet" step="0.1" placeholder="bv. 21.5" /></div>
     <div class="modal-actions">
-      <button class="btn secondary" onclick="closeModal()">Annuleren</button>
+      <button class="btn secondary" onclick="closeModal('metingOverlay')">Annuleren</button>
       <button class="btn" onclick="saveMeting()">Opslaan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Instellingen modal -->
+<div class="modal-overlay" id="instellingenOverlay" onclick="closeOnOutside(event,'instellingenOverlay')">
+  <div class="modal wide">
+    <h2>Instellingen</h2>
+
+    <div class="form-section">Gewicht &amp; doelen</div>
+    <div class="form-row">
+      <div class="form-group"><label>Begingewicht (kg)</label><input type="number" id="sBeginGewicht" step="0.1" /></div>
+      <div class="form-group"><label>Streefgewicht (kg)</label><input type="number" id="sStreefGewicht" step="0.1" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Begin vet % </label><input type="number" id="sBeginVet" step="0.1" /></div>
+      <div class="form-group"><label>Doel vet %</label><input type="number" id="sDoelVet" step="0.1" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Begindatum</label><input type="date" id="sBeginDatum" /></div>
+      <div class="form-group"><label>Einddatum (deadline)</label><input type="date" id="sEindDatum" /></div>
+    </div>
+
+    <div class="form-section">Energieverbruik (TDEE)</div>
+    <div class="form-row">
+      <div class="form-group"><label>BMR – rustverbranding (kcal)</label><input type="number" id="sBmr" step="1" /></div>
+      <div class="form-group"><label>EAT – sport (kcal)</label><input type="number" id="sEat" step="1" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>NEAT – dagelijkse beweging (kcal)</label><input type="number" id="sNeat" step="1" /></div>
+      <div class="form-group"><label>TEF – spijsvertering (kcal)</label><input type="number" id="sTef" step="1" /></div>
+    </div>
+    <div class="tdee-display" id="tdeeDisplay"></div>
+
+    <div class="modal-actions-split">
+      <button class="btn danger" onclick="verwijderAlleData()">🗑 Verwijder alle data</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn secondary" onclick="closeModal('instellingenOverlay')">Annuleren</button>
+        <button class="btn" onclick="saveInstellingen()">Opslaan</button>
+      </div>
     </div>
   </div>
 </div>
@@ -265,21 +194,17 @@
 <script>
 const HISTORISCH = [{"datum":"2025-09-29","gewicht":87.0,"voorspeld":87.0,"vet_perc":25.0},{"datum":"2025-09-30","gewicht":86.2,"voorspeld":86.95,"vet_perc":24.3},{"datum":"2025-10-01","gewicht":85.8,"voorspeld":86.89,"vet_perc":23.95},{"datum":"2025-10-02","gewicht":85.6,"voorspeld":86.84,"vet_perc":23.77},{"datum":"2025-10-03","gewicht":85.9,"voorspeld":86.79,"vet_perc":24.04},{"datum":"2025-10-04","gewicht":85.5,"voorspeld":86.73,"vet_perc":23.68},{"datum":"2025-10-05","gewicht":86.5,"voorspeld":86.68,"vet_perc":24.57},{"datum":"2025-10-06","gewicht":86.0,"voorspeld":86.63,"vet_perc":24.13},{"datum":"2025-10-07","gewicht":85.3,"voorspeld":86.58,"vet_perc":23.51},{"datum":"2025-10-08","gewicht":84.6,"voorspeld":86.52,"vet_perc":22.87},{"datum":"2025-10-09","gewicht":84.5,"voorspeld":86.47,"vet_perc":22.78},{"datum":"2025-10-10","gewicht":84.0,"voorspeld":86.42,"vet_perc":22.32},{"datum":"2025-10-11","gewicht":83.0,"voorspeld":86.36,"vet_perc":21.39},{"datum":"2025-10-12","gewicht":85.3,"voorspeld":86.31,"vet_perc":23.51},{"datum":"2025-10-13","gewicht":85.0,"voorspeld":86.26,"vet_perc":23.24},{"datum":"2025-10-14","gewicht":84.1,"voorspeld":86.2,"vet_perc":22.41},{"datum":"2025-10-15","gewicht":83.5,"voorspeld":86.15,"vet_perc":21.86},{"datum":"2025-10-16","gewicht":84.2,"voorspeld":86.1,"vet_perc":22.51},{"datum":"2025-10-17","gewicht":84.0,"voorspeld":86.04,"vet_perc":22.32},{"datum":"2025-10-18","gewicht":84.4,"voorspeld":85.99,"vet_perc":22.69},{"datum":"2025-10-19","gewicht":84.3,"voorspeld":85.94,"vet_perc":22.6},{"datum":"2025-10-20","gewicht":84.3,"voorspeld":85.89,"vet_perc":22.6},{"datum":"2025-10-21","gewicht":83.3,"voorspeld":85.83,"vet_perc":21.67},{"datum":"2025-10-22","gewicht":83.9,"voorspeld":85.78,"vet_perc":22.23},{"datum":"2025-10-23","gewicht":84.5,"voorspeld":85.73,"vet_perc":22.78},{"datum":"2025-10-24","gewicht":84.9,"voorspeld":85.67,"vet_perc":23.14},{"datum":"2025-10-25","gewicht":82.7,"voorspeld":85.62,"vet_perc":21.1},{"datum":"2025-10-26","gewicht":86.6,"voorspeld":85.57,"vet_perc":24.65},{"datum":"2025-10-27","gewicht":85.7,"voorspeld":85.51,"vet_perc":23.86},{"datum":"2025-10-28","gewicht":84.8,"voorspeld":85.46,"vet_perc":23.05},{"datum":"2025-10-29","gewicht":84.4,"voorspeld":85.41,"vet_perc":22.69},{"datum":"2025-10-30","gewicht":85.6,"voorspeld":85.36,"vet_perc":23.77},{"datum":"2025-10-31","gewicht":84.7,"voorspeld":85.3,"vet_perc":22.96},{"datum":"2025-11-01","gewicht":84.5,"voorspeld":85.25,"vet_perc":22.78},{"datum":"2025-11-02","gewicht":84.4,"voorspeld":85.2,"vet_perc":22.69},{"datum":"2025-11-03","gewicht":83.8,"voorspeld":85.14,"vet_perc":22.14},{"datum":"2025-11-04","gewicht":84.4,"voorspeld":85.09,"vet_perc":22.69},{"datum":"2025-11-05","gewicht":84.6,"voorspeld":85.04,"vet_perc":22.87},{"datum":"2025-11-06","gewicht":84.6,"voorspeld":84.98,"vet_perc":22.87},{"datum":"2025-11-09","gewicht":85.0,"voorspeld":84.82,"vet_perc":23.24},{"datum":"2025-11-10","gewicht":84.7,"voorspeld":84.77,"vet_perc":22.96},{"datum":"2025-11-11","gewicht":84.1,"voorspeld":84.72,"vet_perc":22.41},{"datum":"2025-11-12","gewicht":83.7,"voorspeld":84.67,"vet_perc":22.04},{"datum":"2025-11-13","gewicht":83.5,"voorspeld":84.61,"vet_perc":21.86},{"datum":"2025-11-14","gewicht":84.2,"voorspeld":84.56,"vet_perc":22.51},{"datum":"2025-11-17","gewicht":84.1,"voorspeld":84.4,"vet_perc":22.41},{"datum":"2025-11-18","gewicht":84.2,"voorspeld":84.35,"vet_perc":22.51},{"datum":"2025-11-19","gewicht":83.6,"voorspeld":84.29,"vet_perc":21.95},{"datum":"2025-11-20","gewicht":83.9,"voorspeld":84.24,"vet_perc":22.23},{"datum":"2025-11-21","gewicht":82.8,"voorspeld":84.19,"vet_perc":21.2},{"datum":"2025-11-22","gewicht":82.5,"voorspeld":84.13,"vet_perc":20.91},{"datum":"2025-11-23","gewicht":83.3,"voorspeld":84.08,"vet_perc":21.67},{"datum":"2025-12-01","gewicht":82.2,"voorspeld":83.66,"vet_perc":20.62},{"datum":"2025-12-02","gewicht":82.6,"voorspeld":83.6,"vet_perc":21.0},{"datum":"2025-12-03","gewicht":82.5,"voorspeld":83.55,"vet_perc":20.91},{"datum":"2025-12-04","gewicht":81.6,"voorspeld":83.5,"vet_perc":20.04},{"datum":"2025-12-05","gewicht":82.5,"voorspeld":83.44,"vet_perc":20.91},{"datum":"2025-12-06","gewicht":83.0,"voorspeld":83.39,"vet_perc":21.39},{"datum":"2025-12-07","gewicht":82.6,"voorspeld":83.34,"vet_perc":21.0},{"datum":"2025-12-08","gewicht":81.8,"voorspeld":83.29,"vet_perc":20.23},{"datum":"2025-12-09","gewicht":81.5,"voorspeld":83.23,"vet_perc":19.94},{"datum":"2025-12-10","gewicht":82.4,"voorspeld":83.18,"vet_perc":20.81},{"datum":"2025-12-11","gewicht":82.3,"voorspeld":83.13,"vet_perc":20.72},{"datum":"2025-12-12","gewicht":82.9,"voorspeld":83.07,"vet_perc":21.29},{"datum":"2025-12-13","gewicht":82.0,"voorspeld":83.02,"vet_perc":20.43},{"datum":"2025-12-14","gewicht":83.2,"voorspeld":82.97,"vet_perc":21.57},{"datum":"2025-12-15","gewicht":81.8,"voorspeld":82.91,"vet_perc":20.23},{"datum":"2025-12-16","gewicht":81.2,"voorspeld":82.86,"vet_perc":19.64},{"datum":"2025-12-17","gewicht":81.3,"voorspeld":82.81,"vet_perc":19.74},{"datum":"2025-12-18","gewicht":81.3,"voorspeld":82.76,"vet_perc":19.74},{"datum":"2025-12-19","gewicht":80.8,"voorspeld":82.7,"vet_perc":19.25},{"datum":"2026-01-05","gewicht":83.3,"voorspeld":81.8,"vet_perc":21.67},{"datum":"2026-01-06","gewicht":83.0,"voorspeld":81.75,"vet_perc":21.39},{"datum":"2026-01-07","gewicht":83.1,"voorspeld":81.69,"vet_perc":21.48},{"datum":"2026-01-08","gewicht":83.5,"voorspeld":81.64,"vet_perc":21.86},{"datum":"2026-01-09","gewicht":82.5,"voorspeld":81.59,"vet_perc":20.91},{"datum":"2026-01-10","gewicht":82.4,"voorspeld":81.53,"vet_perc":20.81},{"datum":"2026-01-11","gewicht":81.5,"voorspeld":81.48,"vet_perc":19.94},{"datum":"2026-01-12","gewicht":82.5,"voorspeld":81.43,"vet_perc":20.91},{"datum":"2026-01-13","gewicht":83.7,"voorspeld":81.38,"vet_perc":22.04},{"datum":"2026-01-14","gewicht":82.7,"voorspeld":81.32,"vet_perc":21.1},{"datum":"2026-01-17","gewicht":83.0,"voorspeld":81.16,"vet_perc":21.39},{"datum":"2026-01-18","gewicht":83.0,"voorspeld":81.11,"vet_perc":21.39},{"datum":"2026-01-19","gewicht":82.7,"voorspeld":81.06,"vet_perc":21.1},{"datum":"2026-01-20","gewicht":82.7,"voorspeld":81.0,"vet_perc":21.1},{"datum":"2026-01-21","gewicht":82.4,"voorspeld":80.95,"vet_perc":20.81},{"datum":"2026-01-25","gewicht":84.4,"voorspeld":80.74,"vet_perc":22.69},{"datum":"2026-01-26","gewicht":84.4,"voorspeld":80.69,"vet_perc":null},{"datum":"2026-01-27","gewicht":83.4,"voorspeld":80.63,"vet_perc":21.76},{"datum":"2026-01-28","gewicht":83.5,"voorspeld":80.58,"vet_perc":21.86},{"datum":"2026-01-29","gewicht":83.4,"voorspeld":80.53,"vet_perc":21.76},{"datum":"2026-01-30","gewicht":82.5,"voorspeld":80.47,"vet_perc":20.91},{"datum":"2026-02-02","gewicht":83.9,"voorspeld":80.31,"vet_perc":22.23},{"datum":"2026-02-03","gewicht":83.6,"voorspeld":80.26,"vet_perc":21.95},{"datum":"2026-02-04","gewicht":83.0,"voorspeld":80.21,"vet_perc":21.39},{"datum":"2026-02-07","gewicht":84.2,"voorspeld":80.05,"vet_perc":22.51},{"datum":"2026-02-09","gewicht":84.0,"voorspeld":79.94,"vet_perc":22.32},{"datum":"2026-02-10","gewicht":83.3,"voorspeld":79.89,"vet_perc":21.67},{"datum":"2026-02-11","gewicht":83.4,"voorspeld":79.84,"vet_perc":21.76},{"datum":"2026-02-12","gewicht":84.0,"voorspeld":79.78,"vet_perc":22.32},{"datum":"2026-02-13","gewicht":83.5,"voorspeld":79.73,"vet_perc":21.86},{"datum":"2026-02-17","gewicht":84.3,"voorspeld":79.52,"vet_perc":22.6},{"datum":"2026-02-20","gewicht":83.8,"voorspeld":79.36,"vet_perc":22.14},{"datum":"2026-02-21","gewicht":83.1,"voorspeld":79.31,"vet_perc":21.48},{"datum":"2026-02-22","gewicht":82.9,"voorspeld":79.25,"vet_perc":21.29},{"datum":"2026-02-23","gewicht":82.9,"voorspeld":79.2,"vet_perc":21.29},{"datum":"2026-02-24","gewicht":82.8,"voorspeld":79.15,"vet_perc":21.2},{"datum":"2026-02-27","gewicht":83.7,"voorspeld":78.99,"vet_perc":22.04}];
 
-const DOEL_GEWICHT = 74;
-const START_GEWICHT = 87;
-const DOEL_VET = 16;
-const START_VET = 25;
-const EIND_DATUM = '2026-06-01';
+const DEFAULTS = { beginGewicht:87, streefGewicht:74, beginVet:25, doelVet:16, beginDatum:'2025-09-29', eindDatum:'2026-06-01', bmr:1770, eat:415, neat:350, tef:170 };
 
-let filterDays = 0;
-let weightChart, fatChart;
+function getSettings() {
+  const saved = JSON.parse(localStorage.getItem('gewichtSettings') || '{}');
+  return { ...DEFAULTS, ...saved };
+}
 
 function getData() {
   const extra = JSON.parse(localStorage.getItem('gewichtExtra') || '[]');
   const merged = [...HISTORISCH];
-  extra.forEach(e => {
-    if (!merged.find(m => m.datum === e.datum)) merged.push(e);
-  });
+  extra.forEach(e => { if (!merged.find(m => m.datum === e.datum)) merged.push(e); });
   return merged.sort((a, b) => a.datum.localeCompare(b.datum));
 }
 
@@ -291,37 +216,36 @@ function getFiltered() {
   return all.filter(d => new Date(d.datum) >= cutoff);
 }
 
-function formatDatum(d) {
-  const [y, m, day] = d.split('-');
-  return `${day}-${m}-${y}`;
-}
+function fmt(d) { const [y,m,day] = d.split('-'); return `${day}-${m}-${y}`; }
+
+let filterDays = 0;
+let weightChart, fatChart;
 
 function setFilter(days) {
   filterDays = days;
-  document.querySelectorAll('.filter-btn').forEach(b => {
-    b.classList.toggle('active', parseInt(b.dataset.days) === days);
-  });
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.days) === days));
   render();
 }
 
 function renderStats() {
+  const s = getSettings();
   const all = getData();
   const last = all[all.length - 1];
   const huidig = last.gewicht;
-  const verloren = +(START_GEWICHT - huidig).toFixed(1);
-  const nodig = +(huidig - DOEL_GEWICHT).toFixed(1);
+  const verloren = +(s.beginGewicht - huidig).toFixed(1);
+  const nodig = +(huidig - s.streefGewicht).toFixed(1);
   const vandaag = new Date();
-  const eind = new Date(EIND_DATUM);
-  const dagenOver = Math.max(0, Math.ceil((eind - vandaag) / 86400000));
-
-  const gems = all.slice(-7).reduce((s, d) => s + d.gewicht, 0) / Math.min(7, all.length);
+  const dagenOver = Math.max(0, Math.ceil((new Date(s.eindDatum) - vandaag) / 86400000));
+  const tdee = s.bmr + s.eat + s.neat + s.tef;
+  const gems = all.slice(-7).reduce((a, d) => a + d.gewicht, 0) / Math.min(7, all.length);
 
   const cards = [
-    { label: 'Huidig gewicht', value: `${huidig} kg`, sub: formatDatum(last.datum), cls: 'accent' },
-    { label: 'Verloren', value: `${verloren} kg`, sub: `van ${START_GEWICHT} kg`, cls: 'green' },
-    { label: 'Nog te gaan', value: `${nodig} kg`, sub: `doel: ${DOEL_GEWICHT} kg`, cls: nodig < 5 ? 'green' : 'yellow' },
-    { label: 'Vet %', value: last.vet_perc ? `${last.vet_perc}%` : '-', sub: `doel: ${DOEL_VET}%`, cls: 'accent' },
-    { label: 'Dagen resterend', value: dagenOver, sub: `deadline: ${formatDatum(EIND_DATUM)}`, cls: dagenOver < 30 ? 'red' : 'yellow' },
+    { label: 'Huidig gewicht', value: `${huidig} kg`, sub: fmt(last.datum), cls: 'green' },
+    { label: 'Verloren', value: `${verloren} kg`, sub: `van ${s.beginGewicht} kg`, cls: 'green' },
+    { label: 'Nog te gaan', value: `${nodig} kg`, sub: `doel: ${s.streefGewicht} kg`, cls: nodig < 5 ? 'green' : 'orange' },
+    { label: 'Vet %', value: last.vet_perc ? `${last.vet_perc}%` : '-', sub: `doel: ${s.doelVet}%`, cls: 'blue' },
+    { label: 'Dagen resterend', value: dagenOver, sub: `deadline: ${fmt(s.eindDatum)}`, cls: dagenOver < 30 ? 'orange' : 'orange' },
+    { label: 'TDEE', value: `${tdee}`, sub: 'kcal/dag', cls: 'blue' },
     { label: '7-daags gem.', value: `${gems.toFixed(1)} kg`, sub: 'laatste week', cls: '' },
   ];
 
@@ -334,140 +258,157 @@ function renderStats() {
 }
 
 function renderProgress() {
+  const s = getSettings();
   const all = getData();
   const last = all[all.length - 1];
-  const gewichtPct = Math.min(100, ((START_GEWICHT - last.gewicht) / (START_GEWICHT - DOEL_GEWICHT)) * 100);
-  const vetPct = last.vet_perc ? Math.min(100, ((START_VET - last.vet_perc) / (START_VET - DOEL_VET)) * 100) : 0;
-
+  const gwPct = Math.min(100, ((s.beginGewicht - last.gewicht) / (s.beginGewicht - s.streefGewicht)) * 100);
+  const vetPct = last.vet_perc ? Math.min(100, ((s.beginVet - last.vet_perc) / (s.beginVet - s.doelVet)) * 100) : 0;
   const vandaag = new Date();
-  const start = new Date('2025-09-29');
-  const eind = new Date(EIND_DATUM);
-  const tijdPct = Math.min(100, ((vandaag - start) / (eind - start)) * 100);
+  const tijdPct = Math.min(100, ((vandaag - new Date(s.beginDatum)) / (new Date(s.eindDatum) - new Date(s.beginDatum))) * 100);
 
-  const bars = [
-    { label: 'Gewicht', pct: gewichtPct, color: '#6c63ff' },
-    { label: 'Vet %', pct: vetPct, color: '#43e97b' },
-    { label: 'Tijd', pct: tijdPct, color: '#f7b731' },
-  ];
-
-  document.getElementById('progressBars').innerHTML = bars.map(b => `
+  document.getElementById('progressBars').innerHTML = [
+    { label: 'Gewicht', pct: gwPct, color: '#2e8b57' },
+    { label: 'Vet %', pct: vetPct, color: '#1a6fa8' },
+    { label: 'Tijd', pct: tijdPct, color: '#c95d00' },
+  ].map(b => `
     <div class="progress-row">
       <div class="progress-label">${b.label}</div>
-      <div class="progress-bar-wrap">
-        <div class="progress-bar-fill" style="width:${b.pct.toFixed(1)}%;background:${b.color}"></div>
-      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${b.pct.toFixed(1)}%;background:${b.color}"></div></div>
       <div class="progress-pct" style="color:${b.color}">${b.pct.toFixed(0)}%</div>
     </div>`).join('');
 }
 
 function renderCharts() {
+  const s = getSettings();
   const data = getFiltered();
-  const labels = data.map(d => formatDatum(d.datum));
-  const actuals = data.map(d => d.gewicht);
-  const predicted = data.map(d => d.voorspeld);
-  const fatData = data.map(d => d.vet_perc);
-
-  const goalLine = data.map(() => DOEL_GEWICHT);
-
+  const labels = data.map(d => fmt(d.datum));
   const chartDefaults = {
-    responsive: true,
-    maintainAspectRatio: true,
-    plugins: { legend: { labels: { color: '#8890b0', font: { size: 11 }, boxWidth: 12 } } },
+    responsive: true, maintainAspectRatio: true,
+    plugins: { legend: { labels: { color: '#6b8a6b', font: { size: 11 }, boxWidth: 12 } } },
     scales: {
-      x: { ticks: { color: '#8890b0', maxRotation: 45, font: { size: 10 }, maxTicksLimit: 10 }, grid: { color: 'rgba(45,49,72,.4)' } },
-      y: { ticks: { color: '#8890b0', font: { size: 11 } }, grid: { color: 'rgba(45,49,72,.4)' } }
+      x: { ticks: { color: '#6b8a6b', maxRotation: 45, font: { size: 10 }, maxTicksLimit: 10 }, grid: { color: 'rgba(208,228,208,.6)' } },
+      y: { ticks: { color: '#6b8a6b', font: { size: 11 } }, grid: { color: 'rgba(208,228,208,.6)' } }
     }
   };
 
   if (weightChart) weightChart.destroy();
   weightChart = new Chart(document.getElementById('weightChart'), {
     type: 'line',
-    data: {
-      labels,
-      datasets: [
-        { label: 'Werkelijk', data: actuals, borderColor: '#6c63ff', backgroundColor: 'rgba(108,99,255,.08)', tension: .3, pointRadius: 2, borderWidth: 2, fill: true },
-        { label: 'Voorspeld', data: predicted, borderColor: '#f7b731', backgroundColor: 'transparent', tension: .3, pointRadius: 0, borderWidth: 1.5, borderDash: [5,4] },
-        { label: 'Doel', data: goalLine, borderColor: '#43e97b', backgroundColor: 'transparent', pointRadius: 0, borderWidth: 1, borderDash: [3,6] },
-      ]
-    },
+    data: { labels, datasets: [
+      { label: 'Werkelijk', data: data.map(d => d.gewicht), borderColor: '#2e8b57', backgroundColor: 'rgba(46,139,87,.08)', tension: .3, pointRadius: 2, borderWidth: 2, fill: true },
+      { label: 'Voorspeld', data: data.map(d => d.voorspeld), borderColor: '#1a6fa8', backgroundColor: 'transparent', tension: .3, pointRadius: 0, borderWidth: 1.5, borderDash: [5,4] },
+      { label: 'Doel', data: data.map(() => s.streefGewicht), borderColor: '#c95d00', backgroundColor: 'transparent', pointRadius: 0, borderWidth: 1, borderDash: [3,6] },
+    ]},
     options: { ...chartDefaults }
   });
 
   if (fatChart) fatChart.destroy();
   fatChart = new Chart(document.getElementById('fatChart'), {
     type: 'line',
-    data: {
-      labels,
-      datasets: [
-        { label: 'Vet %', data: fatData, borderColor: '#ff6b6b', backgroundColor: 'rgba(255,107,107,.08)', tension: .3, pointRadius: 2, borderWidth: 2, fill: true, spanGaps: true },
-        { label: 'Doel', data: data.map(() => DOEL_VET), borderColor: '#43e97b', backgroundColor: 'transparent', pointRadius: 0, borderWidth: 1, borderDash: [3,6] },
-      ]
-    },
+    data: { labels, datasets: [
+      { label: 'Vet %', data: data.map(d => d.vet_perc), borderColor: '#1a6fa8', backgroundColor: 'rgba(26,111,168,.08)', tension: .3, pointRadius: 2, borderWidth: 2, fill: true, spanGaps: true },
+      { label: 'Doel', data: data.map(() => s.doelVet), borderColor: '#c95d00', backgroundColor: 'transparent', pointRadius: 0, borderWidth: 1, borderDash: [3,6] },
+    ]},
     options: { ...chartDefaults }
   });
 }
 
 function renderTable() {
-  const data = [...getData()].reverse().slice(0, 30);
-  document.getElementById('entryCount').textContent = `${getData().length} metingen`;
-  document.getElementById('tableBody').innerHTML = data.map(d => {
+  const all = getData();
+  document.getElementById('entryCount').textContent = `${all.length} metingen`;
+  document.getElementById('tableBody').innerHTML = [...all].reverse().slice(0, 30).map(d => {
     const diff = d.voorspeld ? (d.gewicht - d.voorspeld).toFixed(2) : null;
-    const diffBadge = diff !== null
+    const badge = diff !== null
       ? `<span class="badge ${parseFloat(diff) <= 0 ? 'pos' : 'neg'}">${parseFloat(diff) > 0 ? '+' : ''}${diff}</span>`
       : '-';
-    return `<tr>
-      <td>${formatDatum(d.datum)}</td>
-      <td><strong>${d.gewicht}</strong></td>
-      <td>${d.voorspeld ?? '-'}</td>
-      <td>${diffBadge}</td>
-      <td>${d.vet_perc !== null ? d.vet_perc + '%' : '-'}</td>
-    </tr>`;
+    return `<tr><td>${fmt(d.datum)}</td><td><strong>${d.gewicht}</strong></td><td>${d.voorspeld ?? '-'}</td><td>${badge}</td><td>${d.vet_perc != null ? d.vet_perc + '%' : '-'}</td></tr>`;
   }).join('');
 }
 
-function render() {
-  renderStats();
-  renderProgress();
-  renderCharts();
-  renderTable();
-}
+function render() { renderStats(); renderProgress(); renderCharts(); renderTable(); }
 
-function openModal() {
-  const today = new Date().toISOString().slice(0, 10);
-  document.getElementById('inputDatum').value = today;
+/* Meting modal */
+function openMeting() {
+  document.getElementById('inputDatum').value = new Date().toISOString().slice(0,10);
   document.getElementById('inputGewicht').value = '';
   document.getElementById('inputVet').value = '';
-  document.getElementById('modalOverlay').classList.add('open');
-}
-
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('open');
-}
-
-function closeModalOutside(e) {
-  if (e.target === document.getElementById('modalOverlay')) closeModal();
+  document.getElementById('metingOverlay').classList.add('open');
 }
 
 function saveMeting() {
   const datum = document.getElementById('inputDatum').value;
   const gewicht = parseFloat(document.getElementById('inputGewicht').value);
   const vet = document.getElementById('inputVet').value ? parseFloat(document.getElementById('inputVet').value) : null;
-
-  if (!datum || isNaN(gewicht)) {
-    alert('Vul datum en gewicht in.');
-    return;
-  }
-
+  if (!datum || isNaN(gewicht)) { alert('Vul datum en gewicht in.'); return; }
   const extra = JSON.parse(localStorage.getItem('gewichtExtra') || '[]');
-  const existing = extra.findIndex(e => e.datum === datum);
+  const i = extra.findIndex(e => e.datum === datum);
   const entry = { datum, gewicht, voorspeld: null, vet_perc: vet };
-  if (existing >= 0) extra[existing] = entry;
-  else extra.push(entry);
+  if (i >= 0) extra[i] = entry; else extra.push(entry);
   localStorage.setItem('gewichtExtra', JSON.stringify(extra));
-
-  closeModal();
+  closeModal('metingOverlay');
   render();
 }
+
+/* Instellingen modal */
+function updateTdeeDisplay() {
+  const bmr = parseFloat(document.getElementById('sBmr').value) || 0;
+  const eat = parseFloat(document.getElementById('sEat').value) || 0;
+  const neat = parseFloat(document.getElementById('sNeat').value) || 0;
+  const tef = parseFloat(document.getElementById('sTef').value) || 0;
+  const tdee = bmr + eat + neat + tef;
+  document.getElementById('tdeeDisplay').innerHTML = `
+    <div class="tdee-row"><span>BMR (rustverbranding)</span><span>${bmr} kcal</span></div>
+    <div class="tdee-row"><span>EAT (sport)</span><span>${eat} kcal</span></div>
+    <div class="tdee-row"><span>NEAT (dagelijkse beweging)</span><span>${neat} kcal</span></div>
+    <div class="tdee-row"><span>TEF (spijsvertering)</span><span>${tef} kcal</span></div>
+    <div class="tdee-row total"><span>TDEE totaal</span><span>${tdee} kcal/dag</span></div>`;
+}
+
+function openInstellingen() {
+  const s = getSettings();
+  document.getElementById('sBeginGewicht').value = s.beginGewicht;
+  document.getElementById('sStreefGewicht').value = s.streefGewicht;
+  document.getElementById('sBeginVet').value = s.beginVet;
+  document.getElementById('sDoelVet').value = s.doelVet;
+  document.getElementById('sBeginDatum').value = s.beginDatum;
+  document.getElementById('sEindDatum').value = s.eindDatum;
+  document.getElementById('sBmr').value = s.bmr;
+  document.getElementById('sEat').value = s.eat;
+  document.getElementById('sNeat').value = s.neat;
+  document.getElementById('sTef').value = s.tef;
+  updateTdeeDisplay();
+  ['sBmr','sEat','sNeat','sTef'].forEach(id => document.getElementById(id).addEventListener('input', updateTdeeDisplay));
+  document.getElementById('instellingenOverlay').classList.add('open');
+}
+
+function saveInstellingen() {
+  const settings = {
+    beginGewicht: parseFloat(document.getElementById('sBeginGewicht').value),
+    streefGewicht: parseFloat(document.getElementById('sStreefGewicht').value),
+    beginVet: parseFloat(document.getElementById('sBeginVet').value),
+    doelVet: parseFloat(document.getElementById('sDoelVet').value),
+    beginDatum: document.getElementById('sBeginDatum').value,
+    eindDatum: document.getElementById('sEindDatum').value,
+    bmr: parseInt(document.getElementById('sBmr').value),
+    eat: parseInt(document.getElementById('sEat').value),
+    neat: parseInt(document.getElementById('sNeat').value),
+    tef: parseInt(document.getElementById('sTef').value),
+  };
+  localStorage.setItem('gewichtSettings', JSON.stringify(settings));
+  closeModal('instellingenOverlay');
+  render();
+}
+
+function verwijderAlleData() {
+  if (!confirm('Weet je zeker dat je alle extra metingen wilt verwijderen? De historische data (sep 2025 – feb 2026) blijft bewaard.')) return;
+  localStorage.removeItem('gewichtExtra');
+  closeModal('instellingenOverlay');
+  render();
+}
+
+/* Shared modal helpers */
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeOnOutside(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
 
 render();
 </script>
