@@ -732,6 +732,18 @@ function render() {
   renderTable();
 }
 
+function gem7d(datumStr) {
+  const end = new Date(datumStr);
+  const start = new Date(datumStr);
+  start.setDate(start.getDate() - 6);
+  const metingen = cachedData.filter(d => {
+    const t = new Date(d.datum);
+    return t >= start && t <= end;
+  });
+  if (!metingen.length) return null;
+  return +(metingen.reduce((a, d) => a + d.gewicht, 0) / metingen.length).toFixed(2);
+}
+
 function bouwTijdlijn() {
   const s = getS();
   let start = new Date(s.beginDatum);
@@ -810,6 +822,18 @@ function renderCharts() {
           borderWidth: 2,
           borderDash: [6, 4],
           order: 2
+        },
+        {
+          label: '7-daags gem.',
+          data: tijdlijn.map(d => gem7d(d.datum)),
+          borderColor: '#4a7a9b',
+          backgroundColor: 'transparent',
+          tension: 0.4,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          borderWidth: 2,
+          spanGaps: true,
+          order: 0
         },
         {
           label: 'Werkelijk',
