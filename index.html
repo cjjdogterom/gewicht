@@ -733,6 +733,8 @@ function render() {
 }
 
 function gem7d(datumStr) {
+  const vandaag = new Date().toISOString().slice(0, 10);
+  if (datumStr > vandaag) return null;
   const end = new Date(datumStr);
   const start = new Date(datumStr);
   start.setDate(start.getDate() - 6);
