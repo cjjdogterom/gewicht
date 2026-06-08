@@ -192,11 +192,19 @@
     }
 
     .hero-sub {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: nowrap;
       font-size: 0.85rem;
       color: rgba(255, 255, 255, 0.7);
       margin-top: 10px;
+      white-space: nowrap;
     }
 
+    .hero-date { flex-shrink: 0; }
+    .hero-sep { flex-shrink: 0; opacity: 0.5; }
+    .hero-schema { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
     .hero-sub .ahead { color: #a8f0c8; font-weight: 600; }
     .hero-sub .behind { color: #ffd4a0; font-weight: 600; }
 
@@ -255,7 +263,7 @@
     }
 
     .stat-value { font-size: 1.3rem; font-weight: 700; color: var(--text); }
-    .stat-sub { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
+    .stat-sub { font-size: 0.72rem; color: var(--muted); margin-top: 3px; white-space: nowrap; }
 
     /* Progress */
     .progress-card {
@@ -478,9 +486,11 @@
       body { padding: 16px 14px 40px; }
       .hero { padding: 24px 22px; }
       .hero-value { font-size: 2.4rem; }
+      .hero-sub { font-size: 0.78rem; gap: 5px; }
       .hero-meta { gap: 10px; }
       .meta-item { padding: 10px 14px; min-width: 80px; }
       .chart-wrap { height: 220px; }
+      .stat-sub { font-size: 0.68rem; }
     }
   </style>
 </head>
@@ -638,15 +648,15 @@ function render() {
   const tijdPct = Math.max(0, Math.min(100, ((new Date() - new Date(s.beginDatum)) / (new Date(s.eindDatum) - new Date(s.beginDatum))) * 100));
 
   const schemaTekst = opSchema <= 0
-    ? `<span class="ahead">${Math.abs(opSchema).toFixed(1)} kg vóór op schema</span>`
-    : `<span class="behind">${opSchema.toFixed(1)} kg achter op schema</span>`;
+    ? `<span class="ahead">${Math.abs(opSchema).toFixed(1)} kg vóór schema</span>`
+    : `<span class="behind">${opSchema.toFixed(1)} kg achter schema</span>`;
 
   document.getElementById('content').innerHTML = `
     <div class="hero">
       <div class="hero-main">
         <div class="hero-label">Huidig gewicht</div>
         <div class="hero-value num">${last.gewicht.toFixed(1)} <span class="unit">kg</span></div>
-        <div class="hero-sub">${fmt(last.datum)} · ${schemaTekst}</div>
+        <div class="hero-sub"><span class="hero-date">${fmt(last.datum)}</span><span class="hero-sep">·</span><span class="hero-schema">${schemaTekst}</span></div>
       </div>
       <div class="hero-meta">
         <div class="meta-item">
@@ -665,7 +675,6 @@ function render() {
     </div>
 
     <div class="stats-row">
-      <div class="stat"><div class="stat-label">Vet %</div><div class="stat-value num">${last.vet_perc ? last.vet_perc + '%' : '—'}</div><div class="stat-sub">doel: ${s.doelVet}%</div></div>
       <div class="stat"><div class="stat-label">Dagen resterend</div><div class="stat-value num">${dagenOver}</div><div class="stat-sub">tot ${fmt(s.eindDatum)}</div></div>
       <div class="stat"><div class="stat-label">TDEE</div><div class="stat-value num">${tdee}</div><div class="stat-sub">kcal/dag</div></div>
       <div class="stat"><div class="stat-label">7-daags gem.</div><div class="stat-value num">${gems.toFixed(1)} kg</div><div class="stat-sub">laatste week</div></div>
