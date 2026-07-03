@@ -825,8 +825,73 @@ tbody tr:hover td { background: rgba(45, 154, 106, 0.04); }
 .v-item-sub { font-size: 0.72rem; color: var(--muted); }
 .v-item-kcal { font-weight: 700; font-size: 0.88rem; white-space: nowrap; }
 
+/* Statistieken */
+.btn-rij { display: flex; gap: 10px; }
+
+.stat-select {
+  font-family: inherit;
+  font-size: 0.8rem;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+  max-width: 240px;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 14px 18px;
+}
+
+.cal-maand-naam {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+
+.cal-dagen {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.cal-dag {
+  aspect-ratio: 1;
+  border-radius: 3px;
+  background: var(--bg);
+  display: block;
+}
+
+.cal-dag.leeg { background: transparent; }
+.cal-dag.lvl1 { background: #a3d9bd; }
+.cal-dag.lvl2 { background: #5cbf8e; }
+.cal-dag.lvl3 { background: #2d9a6a; }
+.cal-dag.lvl4 { background: #1a6b45; }
+.cal-dag.vandaag { outline: 2px solid var(--orange); outline-offset: -1px; }
+
+.cal-legenda {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+  margin-top: 14px;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.cal-legenda .cal-dag { width: 12px; height: 12px; aspect-ratio: auto; }
+
 @media (max-width: 600px) {
   body { padding: 14px 14px 100px; font-size: 13.5px; }
+
+  /* iOS zoomt in op velden met tekst kleiner dan 16px — dus minimaal 16px */
+  input, select, textarea, .set-input, .rust-select, .stat-select { font-size: 16px !important; }
+  .cal-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .hero { padding: 24px 22px; }
   .hero-value { font-size: 2.4rem; }
   .hero-sub { font-size: 0.78rem; gap: 5px; }

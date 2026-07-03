@@ -93,6 +93,7 @@ function renderWorkout() {
   if (!el) return;
   if (W.view === 'actief' && W.actief) renderActieveWorkout(el);
   else if (W.view === 'routine' && W.editRoutine) renderRoutineEditor(el);
+  else if (W.view === 'stats') renderStats(el);
   else { W.view = 'overzicht'; renderWorkoutOverzicht(el); }
 }
 
@@ -123,8 +124,12 @@ function renderWorkoutOverzicht(el) {
       <div class="card resume-card" onclick="W.view='actief';renderWorkout()">
         <div><strong>Workout bezig</strong><div class="card-meta">${esc(W.actief.naam)} — tik om verder te gaan</div></div>
         <span class="pulse-dot"></span>
-      </div>` : `
-      <button class="btn-primary btn-block btn-lg" onclick="startLegeWorkout()">+ Start lege workout</button>`}
+      </div>
+      <button class="btn-ghost btn-block" onclick="openStats()">📊 Statistieken</button>` : `
+      <div class="btn-rij">
+        <button class="btn-primary btn-lg" style="flex:1" onclick="startLegeWorkout()">+ Start lege workout</button>
+        <button class="btn-ghost btn-lg" onclick="openStats()">📊 Statistieken</button>
+      </div>`}
 
     <div class="stats-row" style="margin-top:16px">
       <div class="stat"><div class="stat-label">Deze week</div><div class="stat-value num">${dezeWeek.aantal}</div><div class="stat-sub">workouts</div></div>
