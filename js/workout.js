@@ -408,11 +408,18 @@ function detecteerPRs(oefeningen) {
   const prs = [];
   for (const o of oefeningen) {
     const rec = records(o.naam);
+    let besteKg = null, beste1 = null;
     for (const s of o.sets) {
       if (!s.done || s.type === 'W' || s.kg == null || !s.reps) continue;
-      if (!rec.maxKg || s.kg > rec.maxKg.kg) { prs.push(`${o.naam}: ${s.kg} kg`); break; }
-      if (rec.best1 && est1RM(s.kg, s.reps) > rec.best1.val) { prs.push(`${o.naam}: 1RM ${est1RM(s.kg, s.reps).toFixed(1)} kg`); break; }
+      if (besteKg == null || s.kg > besteKg) besteKg = s.kg;
+      const r1 = est1RM(s.kg, s.reps);
+      if (beste1 == null || r1 > beste1) beste1 = r1;
     }
+    if (besteKg == null) continue;
+    const delen = [];
+    if (!rec.maxKg || besteKg > rec.maxKg.kg) delen.push(`${besteKg} kg`);
+    if (!rec.best1 || beste1 > rec.best1.val) delen.push(`1RM ±${beste1.toFixed(1)} kg`);
+    if (delen.length) prs.push(`${o.naam}: ${delen.join(' · ')}`);
   }
   return prs;
 }
