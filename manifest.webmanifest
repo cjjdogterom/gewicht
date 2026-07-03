@@ -1,7 +1,7 @@
 {
-  "name": "Gewicht",
-  "short_name": "Gewicht",
-  "description": "Gewicht en voortgang bijhouden",
+  "name": "Fitness — gewicht, workouts & voeding",
+  "short_name": "Fitness",
+  "description": "Gewicht, workouts en voeding bijhouden",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
