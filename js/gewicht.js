@@ -11,6 +11,45 @@ function doelGewicht(datumStr) {
   return +(s.beginGewicht + pct * (s.streefGewicht - s.beginGewicht)).toFixed(2);
 }
 
+/* Voorspelling: lineaire trend over de laatste 28 dagen met metingen */
+function berekenTrend() {
+  if (App.metingen.length < 3) return null;
+  const laatste = App.metingen[App.metingen.length - 1];
+  const t1 = new Date(laatste.datum).getTime();
+  const cutoff = t1 - 28 * 86400000;
+  const punten = App.metingen
+    .filter(m => new Date(m.datum).getTime() >= cutoff)
+    .map(m => ({ x: (new Date(m.datum).getTime() - t1) / 86400000, y: m.gewicht }));
+  if (punten.length < 3) return null;
+  const n = punten.length;
+  const sx = punten.reduce((a, p) => a + p.x, 0);
+  const sy = punten.reduce((a, p) => a + p.y, 0);
+  const sxx = punten.reduce((a, p) => a + p.x * p.x, 0);
+  const sxy = punten.reduce((a, p) => a + p.x * p.y, 0);
+  const noemer = n * sxx - sx * sx;
+  if (!noemer) return null;
+  const helling = (n * sxy - sx * sy) / noemer;      // kg per dag
+  const basis = (sy - helling * sx) / n;              // gewicht op dag 0 (laatste meting)
+  return { helling, basis, vanafDatum: laatste.datum };
+}
+
+function voorspelGewicht(datumStr, trend) {
+  const dagen = (new Date(datumStr) - new Date(trend.vanafDatum)) / 86400000;
+  if (dagen < 0) return null;
+  return +(trend.basis + trend.helling * dagen).toFixed(2);
+}
+
+/* Verwachte datum waarop het streefgewicht wordt bereikt */
+function voorspelDoelDatum(trend) {
+  const s = getS();
+  const teGaan = s.streefGewicht - trend.basis;
+  if (trend.helling >= 0 || teGaan >= 0) return null;   // niet op koers of doel al bereikt
+  const dagen = teGaan / trend.helling;
+  if (dagen > 730) return null;                          // meer dan 2 jaar: niet zinvol
+  const d = new Date(new Date(trend.vanafDatum).getTime() + dagen * 86400000);
+  return d.toISOString().slice(0, 10);
+}
+
 function setFilter(days) {
   filterDays = days;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.days) === days));
@@ -50,6 +89,18 @@ function renderGewicht() {
     ? `<span class="ahead">${Math.abs(opSchema).toFixed(1)} kg vóór schema</span>`
     : `<span class="behind">${opSchema.toFixed(1)} kg achter schema</span>`;
 
+  const trend = berekenTrend();
+  let voorspellingTiles = '';
+  if (trend) {
+    const perWeek = trend.helling * 7;
+    const opEind = voorspelGewicht(s.eindDatum, trend);
+    const doelDatum = voorspelDoelDatum(trend);
+    voorspellingTiles = `
+      <div class="stat"><div class="stat-label">Trend</div><div class="stat-value num">${perWeek <= 0 ? '−' : '+'}${Math.abs(perWeek).toFixed(2)} kg</div><div class="stat-sub">per week (laatste 28 dagen)</div></div>
+      <div class="stat"><div class="stat-label">Verwacht op einddatum</div><div class="stat-value num">${opEind != null ? opEind.toFixed(1) + ' kg' : '—'}</div><div class="stat-sub">bij huidige trend</div></div>
+      <div class="stat"><div class="stat-label">Doel bereikt rond</div><div class="stat-value num" style="font-size:1.05rem">${doelDatum ? fmt(doelDatum) : '—'}</div><div class="stat-sub">${doelDatum ? (doelDatum <= s.eindDatum ? 'vóór je einddatum ✓' : 'na je einddatum') : 'niet op koers bij huidige trend'}</div></div>`;
+  }
+
   el.innerHTML = `
     <div class="hero">
       <div class="hero-main">
@@ -78,6 +129,7 @@ function renderGewicht() {
       <div class="stat"><div class="stat-label">TDEE</div><div class="stat-value num">${tdee}</div><div class="stat-sub">kcal/dag</div></div>
       <div class="stat"><div class="stat-label">7-daags gem.</div><div class="stat-value num">${gems.toFixed(1)} kg</div><div class="stat-sub">laatste week</div></div>
       <div class="stat"><div class="stat-label">Doel vandaag</div><div class="stat-value num">${doelVandaag.toFixed(1)} kg</div><div class="stat-sub">volgens doellijn</div></div>
+      ${voorspellingTiles}
     </div>
 
     <div class="progress-card">
@@ -168,6 +220,11 @@ function renderGewichtChart() {
   const tijdlijn = bouwTijdlijn();
   const labels = tijdlijn.map(d => fmt(d.datum));
 
+  const trend = berekenTrend();
+  const voorspelling = trend
+    ? tijdlijn.map(d => d.datum >= trend.vanafDatum ? voorspelGewicht(d.datum, trend) : null)
+    : [];
+
   if (weightChart) { weightChart.destroy(); weightChart = null; }
   weightChart = new Chart(canvas, {
     type: 'line',
@@ -185,6 +242,19 @@ function renderGewichtChart() {
           borderDash: [6, 4],
           order: 2
         },
+        ...(trend ? [{
+          label: 'Voorspelling',
+          data: voorspelling,
+          borderColor: '#5a4fcf',
+          backgroundColor: 'transparent',
+          tension: 0,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          borderWidth: 2,
+          borderDash: [3, 4],
+          spanGaps: true,
+          order: 3
+        }] : []),
         {
           label: '7-daags gem.',
           data: tijdlijn.map(d => gem7d(d.datum)),
